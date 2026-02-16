@@ -51,8 +51,13 @@ public class UserRepositoryImpl implements UserRepository{
     }
 
     @Override
-    public void updatePassword(String oldPasswordHash, String newPasswordHash){
-        // TODO
+    public void updatePassword(String oldPasswordHash, String newPasswordHash, Session session){
+        User user = session.getCurrentUser();
+        if(user.getPasswordHash().equals(oldPasswordHash)) {
+            user.setPasswordHash(newPasswordHash);
+            System.out.println("Пароль успешно изменён");
+        }
+        else System.out.println("Пароль введён неверно. Операция отменена");
     }
 
     @Override

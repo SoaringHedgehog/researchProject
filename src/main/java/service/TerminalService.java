@@ -25,14 +25,15 @@ public class TerminalService implements ServiceLocator{
 
     public void start(){
         while(true){
-            System.out.println("Введите команду: ");
+            System.out.print("Введите команду: ");
             try{
-                Command command = commandRegistry.getByName(scanner.nextLine().toLowerCase());
+                String commandString = scanner.nextLine().toLowerCase();
+                Command command = commandRegistry.getByName(commandString);
 
                 if (command != null && command.getClass().isAnnotationPresent(RequiresAuth.class) && session.getCurrentUser() == null) {
                     System.out.println("Для этой команды необходимо войти в систему.");
                 }
-                else if(command == null) continue;
+                else if(commandString.equals("")) continue;
                 else{
                     command.process();
                 }
@@ -40,7 +41,6 @@ public class TerminalService implements ServiceLocator{
             catch (Exception e){
                 System.out.println("Такой команды не существует. Вызовите команду 'help' для просмотра " +
                         "команд и их описания");
-                System.out.println(e); // TODO удалить
             }
         }
     }

@@ -18,9 +18,13 @@ public class ProjectUpdateByNameCommand implements Command{
     @Override
     public void process() {
         System.out.println("Выбрано обновление проекта по имени");
-        System.out.println("Введите имя проекта, поле для изменения и новое значение");
-        String project = scanner.nextLine();
-        projectService.updateByName(project);
+        System.out.print("Введите имя: ");
+        String name = scanner.nextLine();
+        System.out.print("Введите название поле для изменения: ");
+        String fieldForUpdate = scanner.nextLine();
+        System.out.print("Введите новое значение: ");
+        String newValue = scanner.nextLine();
+        projectService.updateByName(name, fieldForUpdate, newValue);
     }
 
     @Override

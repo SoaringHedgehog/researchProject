@@ -14,8 +14,8 @@ public class TaskService {
     }
 
     //CREATE
-    public void create(String id, String name, String description, String dateStart, String dateFinish){
-        Integer idChecked;
+    public void create(String id, String name, String description, String dateStart, String dateFinish, String projectId){
+        int idChecked;
         if(id == null) idChecked = taskRepository.getRepositorySize();
         else idChecked = Integer.parseInt(id);
 
@@ -31,12 +31,24 @@ public class TaskService {
             System.out.println("Дата окончания не может быть пустой");
             return;
         }
+        int projectIdChecked;
+        if(projectId == null || projectId.isEmpty()){
+            System.out.println("Пользователь проекта не может быть пустой");
+            return;
+        }
+        else{
+            projectIdChecked = Integer.parseInt(projectId);
+        }
 
-        taskRepository.create(idChecked, name, description, LocalDate.parse(dateStart), LocalDate.parse(dateFinish));
+        taskRepository.create(idChecked, name, description, LocalDate.parse(dateStart), LocalDate.parse(dateFinish), projectIdChecked);
     }
 
     //READ
     public Task findByName(String taskName){
+        if(taskName == null || taskName.isEmpty()){
+            System.out.println("Имя задачи не может быть пустым");
+            return null;
+        }
         return taskRepository.findByName(taskName);
     }
     public Task findById(int taskId){
@@ -44,11 +56,39 @@ public class TaskService {
     }
 
     //UPDATE
-    public void updateByName(String taskName){
-        taskRepository.updateByName(taskName);
+    public void updateByName(String taskName, String fieldForUpdate, String newValue){
+        if(taskName == null || taskName.isEmpty()){
+            System.out.println("Имя задачи не может быть пустым");
+            return;
+        }
+        if(fieldForUpdate == null || fieldForUpdate.isEmpty()){
+            System.out.println("Поле для обновления не может быть пустой");
+            return;
+        }
+        if((newValue == null || newValue.isEmpty()) && !fieldForUpdate.equalsIgnoreCase("описание")){
+            System.out.println("Новое значение не может быть пустой");
+            return;
+        }
+        taskRepository.updateByName(taskName, fieldForUpdate, newValue);
     }
-    public void updateById(int taskId){
-        taskRepository.updateById(taskId);
+    public void updateById(String taskId, String fieldForUpdate, String newValue){
+        int taskIdChecked;
+        if(taskId == null || taskId.isEmpty()){
+            System.out.println("ID проекта не может быть пустым");
+            return;
+        }
+        else{
+            taskIdChecked = Integer.parseInt(taskId);
+        }
+        if(fieldForUpdate == null || fieldForUpdate.isEmpty()){
+            System.out.println("Поле для обновления не может быть пустой");
+            return;
+        }
+        if((newValue == null || newValue.isEmpty()) && !fieldForUpdate.equalsIgnoreCase("описание")){
+            System.out.println("Новое значение не может быть пустой");
+            return;
+        }
+        taskRepository.updateById(taskIdChecked, fieldForUpdate, newValue);
     }
 
     //DELETE

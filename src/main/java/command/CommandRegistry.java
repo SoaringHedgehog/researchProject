@@ -30,6 +30,7 @@ public class CommandRegistry {
     public void init(){
         Command command = new ExitCommand();
         commandMap.put(command.getName(), command);
+        
         command = new ProjectCreateCommand(scanner, projectService);
         commandMap.put(command.getName(), command);
         command = new ProjectDeleteCommand(scanner, projectService);
@@ -64,7 +65,7 @@ public class CommandRegistry {
         commandMap.put(command.getName(), command);
         command = new UserTerminateSessionCommand(userService, session);
         commandMap.put(command.getName(), command);
-        command = new UserUpdatePasswordCommand(scanner, userService);
+        command = new UserUpdatePasswordCommand(scanner, userService, session);
         commandMap.put(command.getName(), command);
 
         command = new HelpCommand(commandMap);

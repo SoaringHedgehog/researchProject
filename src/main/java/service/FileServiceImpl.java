@@ -56,7 +56,7 @@ public class FileServiceImpl implements FileService{
         taskMap.forEach((key, task) -> System.out.println(key + " -> " + task));
         taskMap.forEach((key, value) -> {
             Task task = taskMap.get(key);
-            taskService.create(String.valueOf(task.getId()), task.getName(), task.getDescription(), String.valueOf(task.getDateStart()), String.valueOf(task.getDateFinish()));
+            taskService.create(String.valueOf(task.getId()), task.getName(), task.getDescription(), String.valueOf(task.getDateStart()), String.valueOf(task.getDateFinish()), String.valueOf(task.getProjectId()));
         });
         System.out.println();
     }
@@ -228,6 +228,7 @@ public class FileServiceImpl implements FileService{
             int descriptionCol = -1;
             int dateStartCol = -1;
             int dateFinishCol = -1;
+            int projectIdCol = -1;
 
             for (Cell cell : headerRow) {
                 String header = cell.getStringCellValue().toLowerCase().trim();
@@ -246,6 +247,12 @@ public class FileServiceImpl implements FileService{
                         break;
                     case "datefinish":
                         dateFinishCol = cell.getColumnIndex();
+                        break;
+                    case "projectid":
+                        projectIdCol = cell.getColumnIndex();
+                        break;
+                    default:
+                        System.out.println("Такого поля для чтения не существует");
                         break;
                 }
             }
@@ -270,7 +277,8 @@ public class FileServiceImpl implements FileService{
                         login,
                         getCellValueAccordingType(row.getCell(descriptionCol)),
                         getCellValueAsLocalDate(row.getCell(dateStartCol)),
-                        getCellValueAsLocalDate(row.getCell(dateFinishCol))
+                        getCellValueAsLocalDate(row.getCell(dateFinishCol)),
+                        Integer.parseInt(getCellValueAccordingType(row.getCell(projectIdCol)))
                 );
                 taskMap.put(login, task);
             }

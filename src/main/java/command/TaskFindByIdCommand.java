@@ -20,7 +20,7 @@ public class TaskFindByIdCommand implements Command{
         System.out.println("Выбран поиск задачи по id");
         System.out.println("Введите id проекта");
         int taskId = Integer.parseInt(scanner.nextLine());
-        taskService.findById(taskId);
+        System.out.println(taskService.findById(taskId));
     }
 
     @Override

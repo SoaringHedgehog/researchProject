@@ -27,7 +27,6 @@ public class ApplicationRunner {
     }
 
     public void run(){
-        //TODO  Заполнение сущностей из файлов(xls). Apache POI.
         fileService.initialize();
         terminalService.start();
     }

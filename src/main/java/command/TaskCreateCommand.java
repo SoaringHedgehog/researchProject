@@ -35,7 +35,9 @@ public class TaskCreateCommand implements Command{
             String dateStart = scanner.nextLine();
             System.out.print("Введите дату окончания проекта: ");
             String dateFinish = scanner.nextLine();
-            taskService.create(id, name, description, dateStart, dateFinish);
+            System.out.print("Введите проект, которому принадлежит задача: ");
+            String projectId = scanner.nextLine();
+            taskService.create(id, name, description, dateStart, dateFinish, projectId);
         }
     }
 

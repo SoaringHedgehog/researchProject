@@ -18,9 +18,13 @@ public class TaskUpdateByIdCommand implements Command{
     @Override
     public void process() {
         System.out.println("Выбрано обновление задачи по id");
-        System.out.println("Введите id задачи, поле для изменения и новое значение");
-        int taskId = Integer.parseInt(scanner.nextLine());
-        taskService.updateById(taskId);
+        System.out.print("Введите id: ");
+        String id = scanner.nextLine();
+        System.out.print("Введите название поле для изменения: ");
+        String fieldForUpdate = scanner.nextLine();
+        System.out.print("Введите новое значение: ");
+        String newValue = scanner.nextLine();
+        taskService.updateById(id, fieldForUpdate, newValue);
     }
 
     @Override

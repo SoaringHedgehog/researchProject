@@ -18,11 +18,13 @@ public class ProjectUpdateByIdCommand implements Command{
     @Override
     public void process() {
         System.out.println("Выбрано обновление проекта по id");
-        System.out.println("Введите id проекта, поле для изменения и новое значение");
-        int projectId = Integer.parseInt(scanner.nextLine());
-        String field = scanner.next();
-        String newValue = scanner.next(); // TODO правильный формат?
-        projectService.updateById(projectId);
+        System.out.print("Введите id: ");
+        String id = scanner.nextLine();
+        System.out.print("Введите название поле для изменения: ");
+        String fieldForUpdate = scanner.nextLine();
+        System.out.print("Введите новое значение: ");
+        String newValue = scanner.nextLine();
+        projectService.updateById(id, fieldForUpdate, newValue);
     }
 
     @Override

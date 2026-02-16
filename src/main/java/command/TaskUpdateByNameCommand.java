@@ -18,9 +18,13 @@ public class TaskUpdateByNameCommand implements Command{
     @Override
     public void process() {
         System.out.println("Выбрано обновление задачи по имени");
-        System.out.println("Введите имя задачи, поле для изменения и новое значение");
-        String task = scanner.nextLine();
-        taskService.updateByName(task);
+        System.out.print("Введите имя: ");
+        String name = scanner.nextLine();
+        System.out.print("Введите название поле для изменения: ");
+        String fieldForUpdate = scanner.nextLine();
+        System.out.print("Введите новое значение: ");
+        String newValue = scanner.nextLine();
+        taskService.updateByName(name, fieldForUpdate, newValue);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package command;
 
+import entity.Session;
 import entity.User;
 import service.UserService;
 
@@ -9,20 +10,25 @@ import java.util.Scanner;
 public class UserUpdatePasswordCommand implements Command{
     private final Scanner scanner;
     private final UserService userService;
+    Session session;
     String pattern = "update_password";
 
-    public UserUpdatePasswordCommand(Scanner scanner, UserService userService){
+    public UserUpdatePasswordCommand(Scanner scanner, UserService userService, Session session){
         this.scanner = scanner;
         this.userService = userService;
+        this.session = session;
     }
 
     @Override
     public void process() {
         System.out.println("Выбрано обновление пароля пользователя");
-        System.out.println("Введите старый и новый пароли через пробел");
-        String oldPassword = scanner.next();
-        String newPassword = scanner.next();
-        userService.updatePassword(oldPassword, newPassword);
+        System.out.print("Введите старый пароль: ");
+        String oldPassword = scanner.nextLine();
+        System.out.print("Введите новый пароль: ");
+        String newPassword = scanner.nextLine();
+        System.out.println("Повторно введите новый пароль для подтверждения: ");
+        String repeatNewPassword = scanner.nextLine();
+        userService.updatePassword(oldPassword, newPassword, repeatNewPassword, session);
     }
 
     @Override

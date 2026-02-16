@@ -53,7 +53,7 @@ public class UserService {
     }
 
     public void registerUser(String id, String login, String password, RoleType role) {
-        Integer idChecked;
+        int idChecked;
         if(id == null) idChecked = userRepository.getRepositorySize();
         else idChecked = Integer.parseInt(id);
 
@@ -101,7 +101,7 @@ public class UserService {
         userRepository.terminateSession(session);
     }
 
-    public void updatePassword(String oldPassword, String newPassword){
+    public void updatePassword(String oldPassword, String newPassword, String repeatNewPassword, Session session){
         if(oldPassword == null || oldPassword.isEmpty()){
             System.out.println("Старый пароль не может быть пустым");
             return;
@@ -112,6 +112,10 @@ public class UserService {
             return;
         }
 
+        if(!newPassword.equals(repeatNewPassword)){
+            System.out.println("Пароль не совпадают. Операция отменена");
+            return;
+        }
         try{
             MessageDigest md5_1 = MessageDigest.getInstance("MD5");
             byte[] inputBytes = oldPassword.getBytes("UTF-8");
@@ -135,7 +139,7 @@ public class UserService {
                 checkedNewPassword.append(String.format("%02x", b & 0xff));
             }
 
-            userRepository.updatePassword(checkedOldPassword.toString(), checkedNewPassword.toString());
+            userRepository.updatePassword(checkedOldPassword.toString(), checkedNewPassword.toString(), session);
         }
         catch(NoSuchAlgorithmException | UnsupportedEncodingException e) {
             throw new RuntimeException("Ошибка при генерации MD5 хеша", e);

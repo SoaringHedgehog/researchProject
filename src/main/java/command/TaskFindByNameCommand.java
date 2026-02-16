@@ -20,7 +20,7 @@ public class TaskFindByNameCommand implements Command{
         System.out.println("Выбран поиск задачи по имени");
         System.out.println("Введите имя задачи");
         String projectName = scanner.nextLine();
-        taskService.findByName(projectName);
+        System.out.println(taskService.findByName(projectName));
     }
 
     @Override

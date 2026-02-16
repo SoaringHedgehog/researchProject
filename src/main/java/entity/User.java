@@ -9,7 +9,7 @@ import lombok.*;
 public class User {
     private int id;
     private String login;
-    private String passwordHash; // TODO String?
+    private String passwordHash;
     private RoleType roleType;
 
     @Override
