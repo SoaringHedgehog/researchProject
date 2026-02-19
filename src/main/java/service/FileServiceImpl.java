@@ -82,10 +82,6 @@ public class FileServiceImpl implements FileService{
                 }
             }
 
-            if (loginCol == -1) {
-                throw new RuntimeException("Колонка 'user_id' не найдена");
-            }
-
             // Итерация по строкам данных (начиная со второй)
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
@@ -152,10 +148,6 @@ public class FileServiceImpl implements FileService{
                         System.out.println("Такого поля для чтения не существует");
                         break;
                 }
-            }
-
-            if (nameCol == -1) {
-                throw new RuntimeException("Колонка 'user_id' не найдена");
             }
 
             // Итерация по строкам данных (начиная со второй)
@@ -225,10 +217,6 @@ public class FileServiceImpl implements FileService{
                         System.out.println("Такого поля для чтения не существует");
                         break;
                 }
-            }
-
-            if (nameCol == -1) {
-                throw new RuntimeException("Колонка 'user_id' не найдена");
             }
 
             // Итерация по строкам данных (начиная со второй)
