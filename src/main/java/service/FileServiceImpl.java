@@ -32,12 +32,12 @@ public class FileServiceImpl implements FileService{
 
     @Override
     public void initialize() {
+        // TODO считывание сразу в БД
         System.out.println("Пользователи:");
         Map<String, User> userMap = readUsersToMap(filePathUsers);
         userMap.forEach((key, user) -> System.out.println(key + " -> " + user));
         userMap.forEach((key, value) -> {
             User user = userMap.get(key);
-            // TODO При заполнении способом из метода, будет сохраняться не хэш пароля, а сам пароль, а уже здесь через команду преобразование
             userService.registerUser(String.valueOf(user.getId()), user.getLogin(), user.getPasswordHash(), user.getRoleType());
         });
         System.out.println();
@@ -61,7 +61,7 @@ public class FileServiceImpl implements FileService{
         System.out.println();
     }
 
-    public static Map<String, User> readUsersToMap(String filePath) {
+    public Map<String, User> readUsersToMap(String filePath) {
         Map<String, User> userMap = new LinkedHashMap<>(); // сохраняет порядок вставки
 
         try (FileInputStream fis = new FileInputStream(filePath);
@@ -126,11 +126,12 @@ public class FileServiceImpl implements FileService{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return userMap;
     }
 
-
-    public static Map<String, Project> readProjectsToMap(String filePath) {
+    // TODO not static (Поч не рекомендуется использовать static)
+    public Map<String, Project> readProjectsToMap(String filePath) {
         Map<String, Project> projectMap = new LinkedHashMap<>(); // сохраняет порядок вставки
 
         try (FileInputStream fis = new FileInputStream(filePath);
@@ -151,7 +152,6 @@ public class FileServiceImpl implements FileService{
             int dateStartCol = -1;
             int dateFinishCol = -1;
             int userIdCol = -1;
-
 
             for (Cell cell : headerRow) {
                 String header = cell.getStringCellValue().toLowerCase().trim();
@@ -189,7 +189,6 @@ public class FileServiceImpl implements FileService{
                 // Получаем значение ключа (user_id) как строку
                 String name = getCellValueAccordingType(row.getCell(nameCol));
 
-                // Создаём объект User
                 Project project = new Project(
                         Integer.parseInt(getCellValueAccordingType(row.getCell(idCol))),
                         name,
@@ -197,7 +196,7 @@ public class FileServiceImpl implements FileService{
                         getCellValueAsLocalDate(row.getCell(dateStartCol)),
                         getCellValueAsLocalDate(row.getCell(dateFinishCol)),
                         Integer.parseInt(getCellValueAccordingType(row.getCell(userIdCol)))
-                        );
+                );
 
                 projectMap.put(name, project);
             }
@@ -205,10 +204,11 @@ public class FileServiceImpl implements FileService{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return projectMap;
     }
 
-    public static Map<String, Task> readTasksToMap(String filePath) {
+    public Map<String, Task> readTasksToMap(String filePath) {
         Map<String, Task> taskMap = new LinkedHashMap<>(); // сохраняет порядок вставки
 
         try (FileInputStream fis = new FileInputStream(filePath);
@@ -292,7 +292,7 @@ public class FileServiceImpl implements FileService{
     /**
      * Безопасное получение строкового значения из ячейки.
      */
-    private static String getCellValueAccordingType(Cell cell) {
+    private String getCellValueAccordingType(Cell cell) {
         if (cell == null) {
             return "";
         }
@@ -317,16 +317,16 @@ public class FileServiceImpl implements FileService{
         }
     }
 
-    private static LocalDate getCellValueAsLocalDate(Cell cell) {
+    private LocalDate getCellValueAsLocalDate(Cell cell) {
         if (cell == null) {
-            return null;
+            throw new RuntimeException("Пустая ячейка. Невозможно привести к типу LocalDate");
         }
         return cell.getLocalDateTimeCellValue().toLocalDate();
     }
 
-    private static RoleType getCellValueAsRoleType(Cell cell) {
+    private RoleType getCellValueAsRoleType(Cell cell) {
         if (cell == null) {
-            return null;
+            throw new RuntimeException("Пустая ячейка. Невозможно привести к типу RoleType");
         }
         return RoleType.valueOf(cell.getStringCellValue());
     }

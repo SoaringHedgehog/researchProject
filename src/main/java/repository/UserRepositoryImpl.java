@@ -19,8 +19,7 @@ public class UserRepositoryImpl implements UserRepository{
     public void authorizeUser(String login, String passwordHash, Session session){
         User user = userMap.get(login);
         if(user == null){
-            System.out.println("Пользователь с таким логином не найден");
-            return;
+            throw new RuntimeException("Пользователь с таким логином не найден");
         }
 
         if(Objects.equals(user.getPasswordHash(), passwordHash)){

@@ -34,7 +34,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     @Override
     public Project findByName(String projectName){
         Project project = projectMap.get(projectName);
-        if(project == null) System.out.println("Проект не найден");
+        if(project == null) throw new RuntimeException("Проект с таким именем не найден");
         return project;
     }
     @Override
@@ -44,19 +44,19 @@ public class ProjectRepositoryImpl implements ProjectRepository{
                 return projectMap.get(project.getKey());
             }
         }
-        System.out.println("Проект не найден");
-        return null;
+        throw new RuntimeException("Проект с таким Id не найден");
     }
 
     //UPDATE
+    // TODO Вынести в отдельную реализацию
     @Override
-    public void updateByName(String projectName, String fieldForUpdate, String newValue){
+    public Project updateByName(String projectName, String fieldForUpdate, String newValue){
         Project project = projectMap.get(projectName);
         switch(fieldForUpdate.toLowerCase()){
             case "id":
                 try{
                     int idValue = Integer.parseInt(newValue);
-                    if(findById(idValue) != null) System.out.println("Этот id уже занят");
+                    if(findById(idValue) != null) throw new RuntimeException("Этот id проекта уже занят");
                     else {
                         project.setId(idValue);
                         System.out.println("id Проекта успешно изменён");
@@ -68,7 +68,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
                 break;
             case "название":
                 try{
-                    if(findByName(newValue) != null) System.out.println("Это имя проекта уже занято");
+                    if(findByName(newValue) != null) throw new RuntimeException("Это имя проекта уже занято");
                     else {
                         project.setName(newValue);
                         System.out.println("Имя проекта успешно изменено");
@@ -113,12 +113,12 @@ public class ProjectRepositoryImpl implements ProjectRepository{
                 }
                 break;
             default:
-                System.out.println("Такого поля не существует");
-                break;
+                throw new RuntimeException("Такого поля не существует");
         }
+        return project;
     }
     @Override
-    public void updateById(int projectId, String fieldForUpdate, String newValue){
+    public Project updateById(int projectId, String fieldForUpdate, String newValue){
         Project project = null;
         for(Map.Entry<String, Project> elem : projectMap.entrySet()){
             if(elem.getValue().getId() == projectId){
@@ -128,14 +128,14 @@ public class ProjectRepositoryImpl implements ProjectRepository{
         }
 
         if(project == null){
-            System.out.println("Проект с таким id не найден");
-            return;
+            throw new RuntimeException("Проект с таким id не найден");
         }
+
         switch(fieldForUpdate.toLowerCase()){
             case "id":
                 try{
                     int idValue = Integer.parseInt(newValue);
-                    if(findById(idValue) != null) System.out.println("Этот id уже занят");
+                    if(findById(idValue) != null) throw new RuntimeException("Этот id уже занят");
                     else {
                         project.setId(idValue);
                         System.out.println("id Проекта успешно изменён");
@@ -147,7 +147,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
                 break;
             case "название":
                 try{
-                    if(findByName(newValue) != null) System.out.println("Это имя проекта уже занято");
+                    if(findByName(newValue) != null) throw new RuntimeException("Это имя проекта уже занято");
                     else {
                         project.setName(newValue);
                         System.out.println("Имя проекта успешно изменено");
@@ -190,20 +190,22 @@ public class ProjectRepositoryImpl implements ProjectRepository{
                 }
                 break;
             default:
-                System.out.println("Такого поля не существует");
-                break;
+                throw new RuntimeException("Такого поля не существует в Project");
         }
+
+        return project;
     }
 
     //DELETE
     @Override
-    public void delete(String projectName){
+    public Project delete(String projectName){
         if(projectMap.containsKey(projectName)){
-            projectMap.remove(projectName);
+            Project project = projectMap.remove(projectName);
             System.out.println("Проект успешно удалён");
+            return project;
         }
         else{
-            System.out.println("Проект с таким названием не найден.");
+            throw new RuntimeException("Проект с таким названием не найден");
         }
     }
 

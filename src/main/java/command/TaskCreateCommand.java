@@ -1,5 +1,8 @@
 package command;
 
+import entity.Project;
+import entity.Task;
+import service.ProjectService;
 import service.TaskService;
 
 import java.util.Scanner;
@@ -8,11 +11,13 @@ import java.util.Scanner;
 public class TaskCreateCommand implements Command{
     private final Scanner scanner;
     private final TaskService taskService;
+    private final ProjectService projectService;
     String pattern = "create task";
 
-    public TaskCreateCommand(Scanner scanner, TaskService taskService){
+    public TaskCreateCommand(Scanner scanner, TaskService taskService, ProjectService projectService){
         this.scanner = scanner;
         this.taskService = taskService;
+        this.projectService = projectService;
     }
 
     @Override
@@ -37,7 +42,9 @@ public class TaskCreateCommand implements Command{
             String dateFinish = scanner.nextLine();
             System.out.print("Введите проект, которому принадлежит задача: ");
             String projectId = scanner.nextLine();
-            taskService.create(id, name, description, dateStart, dateFinish, projectId);
+            Task task = taskService.create(id, name, description, dateStart, dateFinish, projectId);
+            Project project = projectService.findById(Integer.parseInt(projectId));
+            project.getTasks().add(task);
         }
     }
 

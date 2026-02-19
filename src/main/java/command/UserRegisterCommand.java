@@ -38,7 +38,11 @@ public class UserRegisterCommand implements Command{
             for (int i = 0; i < roleTypes.length; i++) {
                 System.out.println(i + " " + roleTypes[i]);
             }
-            Integer roleType = Integer.parseInt(scanner.nextLine());
+            int roleType = Integer.parseInt(scanner.nextLine());
+            if(roleType < 0 || roleType > roleTypes.length - 1){
+                System.out.println("Такой роли не существует");
+                return;
+            }
             userService.registerUser(id, login, password, roleTypes[roleType]);
         }
     }

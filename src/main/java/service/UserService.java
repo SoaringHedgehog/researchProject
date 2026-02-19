@@ -19,18 +19,15 @@ public class UserService {
 
     public void authorizeUser(String login, String password, Session session) {
         if(session.getCurrentUser() != null){
-            System.out.println("Вход уже выполнен");
-            return;
+            throw new RuntimeException("Вход уже выполнен");
         }
 
         if(login == null || login.isEmpty()){
-            System.out.println("Логин не может быть пустым");
-            return;
+            throw new RuntimeException("Логин не может быть пустым");
         }
 
         if(password == null || password.isEmpty()){
-            System.out.println("Пароль не может быть пустым");
-            return;
+            throw new RuntimeException("Пароль не может быть пустым");
         }
 
         try{
@@ -58,21 +55,11 @@ public class UserService {
         else idChecked = Integer.parseInt(id);
 
         if(login == null || login.isEmpty()){
-            System.out.println("Логин не может быть пустым");
-            return;
+            throw new RuntimeException("Логин не может быть пустым");
         }
 
         if(password == null || password.isEmpty()){
-            System.out.println("Пароль не может быть пустым");
-            return;
-        }
-
-        try{
-            RoleType.valueOf(role.toString());
-        }
-        catch (IllegalArgumentException e){
-            System.out.println("Такой роли не существует");
-            return;
+            throw new RuntimeException("Пароль не может быть пустым");
         }
 
         try{
@@ -96,26 +83,24 @@ public class UserService {
 
     public void terminateSession(Session session){
         if(session.getCurrentUser() == null){
-            System.out.println("Пользователь и так не в сети");
+            throw new RuntimeException("Текущий пользователь отсутствует");
         }
         userRepository.terminateSession(session);
     }
 
     public void updatePassword(String oldPassword, String newPassword, String repeatNewPassword, Session session){
         if(oldPassword == null || oldPassword.isEmpty()){
-            System.out.println("Старый пароль не может быть пустым");
-            return;
+            throw new RuntimeException("Старый пароль не может быть пустым");
         }
 
         if(newPassword == null || newPassword.isEmpty()){
-            System.out.println("Нвоый пароль не может быть пустым");
-            return;
+            throw new RuntimeException("Нвоый пароль не может быть пустым");
+        }
+        
+        if(!newPassword.equals(repeatNewPassword)){
+            throw new RuntimeException("Пароль не совпадают. Операция отменена");
         }
 
-        if(!newPassword.equals(repeatNewPassword)){
-            System.out.println("Пароль не совпадают. Операция отменена");
-            return;
-        }
         try{
             MessageDigest md5_1 = MessageDigest.getInstance("MD5");
             byte[] inputBytes = oldPassword.getBytes("UTF-8");

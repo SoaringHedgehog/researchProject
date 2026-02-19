@@ -44,7 +44,7 @@ public class CommandRegistry {
         command = new ProjectUpdateByNameCommand(scanner, projectService);
         commandMap.put(command.getName(), command);
 
-        command = new TaskCreateCommand(scanner, taskService);
+        command = new TaskCreateCommand(scanner, taskService, projectService);
         commandMap.put(command.getName(), command);
         command = new TaskDeleteCommand(scanner, taskService);
         commandMap.put(command.getName(), command);

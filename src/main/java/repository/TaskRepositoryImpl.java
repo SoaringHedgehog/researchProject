@@ -17,14 +17,15 @@ public class TaskRepositoryImpl implements TaskRepository{
 
     //CREATE
     @Override
-    public void create(int id, String name, String description, LocalDate dateStart, LocalDate dateFinish, int projectId){
+    public Task create(int id, String name, String description, LocalDate dateStart, LocalDate dateFinish, int projectId){
         if(!taskMap.containsKey(name)){
             Task task = new Task(id, name, description, dateStart, dateFinish, projectId);
             taskMap.put(task.getName(), task);
             System.out.println("Задача успешно добавлена");
+            return task;
         }
         else{
-            System.out.println("Задача с таким названием уже существует. Попробуйте другое");
+            throw new RuntimeException("Задача с таким названием уже существует. Попробуйте другое");
         }
     }
 
@@ -32,7 +33,7 @@ public class TaskRepositoryImpl implements TaskRepository{
     @Override
     public Task findByName(String taskName){
         Task task = taskMap.get(taskName);
-        if(task == null) System.out.println("Задача с таким именем не найдена");
+        if(task == null) throw new RuntimeException("Задача с таким именем не найдена");
         return task;
     }
     @Override
@@ -42,19 +43,18 @@ public class TaskRepositoryImpl implements TaskRepository{
                 return taskMap.get(task.getKey());
             }
         }
-        System.out.println("Задача с таким id не найдена");
-        return null;
+        throw new RuntimeException("Задача с таким id не найдена");
     }
 
     //READ
     @Override
-    public void updateByName(String taskName, String fieldForUpdate, String newValue){
+    public Task updateByName(String taskName, String fieldForUpdate, String newValue){
         Task task = taskMap.get(taskName);
         switch(fieldForUpdate.toLowerCase()){
             case "id":
                 try{
                     int idValue = Integer.parseInt(newValue);
-                    if(findById(idValue) != null) System.out.println("Этот id уже занят");
+                    if(findById(idValue) != null) throw new RuntimeException("Этот id задачи уже занят");
                     else {
                         task.setId(idValue);
                         System.out.println("Id задачи успешно изменён");
@@ -66,7 +66,7 @@ public class TaskRepositoryImpl implements TaskRepository{
                 break;
             case "название":
                 try{
-                    if(findByName(newValue) != null) System.out.println("Это имя проекта уже занято");
+                    if(findByName(newValue) != null) throw new RuntimeException("Это имя задачи уже занято");
                     else {
                         task.setName(newValue);
                         System.out.println("Имя проекта успешно изменено");
@@ -114,9 +114,11 @@ public class TaskRepositoryImpl implements TaskRepository{
                 System.out.println("Такого поля не существует");
                 break;
         }
+
+        return task;
     }
     @Override
-    public void updateById(int taskId, String fieldForUpdate, String newValue){
+    public Task updateById(int taskId, String fieldForUpdate, String newValue){
         Task task = null;
         for(Map.Entry<String, Task> elem : taskMap.entrySet()){
             if(elem.getValue().getId() == taskId){
@@ -126,14 +128,13 @@ public class TaskRepositoryImpl implements TaskRepository{
         }
 
         if(task == null){
-            System.out.println("Задача с таким id не найдена");
-            return;
+            throw new RuntimeException("Задача с таким id не найдена");
         }
         switch(fieldForUpdate.toLowerCase()){
             case "id":
                 try{
                     int idValue = Integer.parseInt(newValue);
-                    if(findById(idValue) != null) System.out.println("Этот id уже занят");
+                    if(findById(idValue) != null) throw new RuntimeException("Этот id задачи уже занят");
                     else {
                         task.setId(idValue);
                         System.out.println("Id задачи успешно изменён");
@@ -145,10 +146,10 @@ public class TaskRepositoryImpl implements TaskRepository{
                 break;
             case "название":
                 try{
-                    if(findByName(newValue) != null) System.out.println("Это имя проекта уже занято");
+                    if(findByName(newValue) != null) throw new RuntimeException("Это имя задачи уже занято");
                     else {
                         task.setName(newValue);
-                        System.out.println("Имя проекта успешно изменено");
+                        System.out.println("Имя задачи успешно изменено");
                     }
                 }
                 catch (Exception e){
@@ -191,13 +192,14 @@ public class TaskRepositoryImpl implements TaskRepository{
                 System.out.println("Такого поля не существует");
                 break;
         }
+
+        return task;
     }
 
     //DELETE
     @Override
-    public void deleteByName(String taskName){
-        //+Удалить из проекта, которому принадлежит задача
-        taskMap.remove(taskName);
+    public Task deleteByName(String taskName){
+        return taskMap.remove(taskName);
     }
 
     @Override

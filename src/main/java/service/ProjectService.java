@@ -21,29 +21,23 @@ public class ProjectService {
     //создание project в ProjectRepositoryImpl
     public void create(String id, String name, String description, String dateStart, String dateFinish, String userId){
         int idChecked;
-        if(id == null) idChecked = projectRepository.getRepositorySize();
+        if(id == null || id.isEmpty()) idChecked = projectRepository.getRepositorySize();
         else idChecked = Integer.parseInt(id);
 
         if(name == null || name.isEmpty()){
-            System.out.println("Имя проекта не может быть пустым");
-            return;
+            throw new RuntimeException("Имя проекта не может быть пустым");
         }
         if(dateStart == null || dateStart.isEmpty()){
-            System.out.println("Дата начала не может быть пустой");
-            return;
+            throw new RuntimeException("Дата начала проекта не может быть пустой");
         }
         if(dateFinish == null || dateFinish.isEmpty()){
-            System.out.println("Дата окончания не может быть пустой");
-            return;
+            throw new RuntimeException("Дата окончания проекта не может быть пустой");
         }
         int userIdChecked;
         if(userId == null || userId.isEmpty()){
-            System.out.println("Пользователь проекта не может быть пустой");
-            return;
+            throw new RuntimeException("Пользователь проекта не может быть пустой");
         }
-        else{
             userIdChecked = Integer.parseInt(userId);
-        }
 
         projectRepository.create(idChecked, name, description, LocalDate.parse(dateStart), LocalDate.parse(dateFinish), userIdChecked);
     }
@@ -52,8 +46,7 @@ public class ProjectService {
     //READ
     public Project findByName(String projectName){
         if(projectName == null || projectName.isEmpty()){
-            System.out.println("ID проекта не может быть пустым");
-            return null;
+            throw new RuntimeException("Имя проекта не может быть пустым");
         }
         return projectRepository.findByName(projectName);
     }
@@ -62,53 +55,48 @@ public class ProjectService {
     }
 
     //UPDATE
-    public void updateByName(String projectName, String fieldForUpdate, String newValue){
+    public Project updateByName(String projectName, String fieldForUpdate, String newValue){
         if(projectName == null || projectName.isEmpty()){
-            System.out.println("ID проекта не может быть пустым");
-            return;
+            throw new RuntimeException("Имя проекта не может быть пустым");
         }
         if(fieldForUpdate == null || fieldForUpdate.isEmpty()){
-            System.out.println("Поле для обновления не может быть пустой");
-            return;
+            throw new RuntimeException("Поле для обновления не может быть пустым");
         }
         if((newValue == null || newValue.isEmpty()) && !fieldForUpdate.equalsIgnoreCase("описание")){
-            System.out.println("Новое значение не может быть пустым");
-            return;
+            throw new RuntimeException("Новое значение поля не может быть пустым");
         }
-        projectRepository.updateByName(projectName, fieldForUpdate, newValue);
+        Project project = projectRepository.updateByName(projectName, fieldForUpdate, newValue);
+        return project;
     }
 
     public void updateById(String projectId, String fieldForUpdate, String newValue){
         int projectIdChecked;
         if(projectId == null || projectId.isEmpty()){
-            System.out.println("ID проекта не может быть пустым");
-            return;
+            throw new RuntimeException("ID проекта не может быть пустым");
         }
         else{
             projectIdChecked = Integer.parseInt(projectId);
         }
         if(fieldForUpdate == null || fieldForUpdate.isEmpty()){
-            System.out.println("Поле для обновления не может быть пустой");
-            return;
+            throw new RuntimeException("Поле для обновления не может быть пустым");
         }
         if((newValue == null || newValue.isEmpty()) && !fieldForUpdate.equalsIgnoreCase("описание")){
-            System.out.println("Новое значение не может быть пустым");
-            return;
+            throw new RuntimeException("Новое значение не может быть пустым");
         }
 
         projectRepository.updateById(projectIdChecked, fieldForUpdate, newValue);
     }
 
     //DELETE
-    public void deleteByName(String projectName){
+    public Project deleteByName(String projectName){
         if(projectName == null || projectName.isEmpty()){
-            System.out.println("Имя проекта не может быть пустым");
-            return;
+            throw new RuntimeException("Имя проекта не может быть пустым");
         }
+
         Project project = projectRepository.findByName(projectName);
         for(Task task : project.getTasks()){
             taskService.deleteByName(task.getName());
         }
-        projectRepository.delete(projectName);
+        return projectRepository.delete(projectName);
     }
 }
