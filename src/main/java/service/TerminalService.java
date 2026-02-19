@@ -23,7 +23,6 @@ public class TerminalService implements ServiceLocator{
         this.commandRegistry = new CommandRegistry(scanner, projectService, taskService, userService, session);
     }
 
-    // TODO throw Exception с message(println) - RuntimeException + обернуть TerminalService в try - catch
     public void start(){
         while(true){
             System.out.print("Введите команду: ");

@@ -32,38 +32,22 @@ public class FileServiceImpl implements FileService{
 
     @Override
     public void initialize() {
-        // TODO считывание сразу в БД
         System.out.println("Пользователи:");
-        Map<String, User> userMap = readUsersToMap(filePathUsers);
-        userMap.forEach((key, user) -> System.out.println(key + " -> " + user));
-        userMap.forEach((key, value) -> {
-            User user = userMap.get(key);
-            userService.registerUser(String.valueOf(user.getId()), user.getLogin(), user.getPasswordHash(), user.getRoleType());
-        });
-        System.out.println();
+        readUsersToMap(filePathUsers);
+        System.out.println("Ползователи заполнены из файла");
 
         System.out.println("Проекты: ");
-        Map<String, Project> projectMap = readProjectsToMap(filePathProjects);
-        projectMap.forEach((key, project) -> System.out.println(key + " -> " + project));
-        projectMap.forEach((key, value) -> {
-            Project project = projectMap.get(key);
-            projectService.create(String.valueOf(project.getId()), project.getName(), project.getDescription(), String.valueOf(project.getDateStart()), String.valueOf(project.getDateFinish()), String.valueOf(project.getUserId()));
-        });
+        readProjectsToMap(filePathProjects);
+        System.out.println("Проекты заполнены из файла");
         System.out.println();
 
         System.out.println("Задачи: ");
-        Map<String, Task> taskMap = readTasksToMap(filePathTasks);
-        taskMap.forEach((key, task) -> System.out.println(key + " -> " + task));
-        taskMap.forEach((key, value) -> {
-            Task task = taskMap.get(key);
-            taskService.create(String.valueOf(task.getId()), task.getName(), task.getDescription(), String.valueOf(task.getDateStart()), String.valueOf(task.getDateFinish()), String.valueOf(task.getProjectId()));
-        });
+        readTasksToMap(filePathTasks);
+        System.out.println("Задачи заполнены из файла");
         System.out.println();
     }
 
-    public Map<String, User> readUsersToMap(String filePath) {
-        Map<String, User> userMap = new LinkedHashMap<>(); // сохраняет порядок вставки
-
+    public void readUsersToMap(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
@@ -108,32 +92,24 @@ public class FileServiceImpl implements FileService{
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
-                int id = Integer.parseInt(getCellValueAccordingType(row.getCell(idCol)));
-                // Получаем значение ключа (user_id) как строку
-                String login = getCellValueAccordingType(row.getCell(loginCol));
-
                 // Создаём объект User
                 User user = new User(
-                        id,
+                        Integer.parseInt(getCellValueAccordingType(row.getCell(idCol))),
                         getCellValueAccordingType(row.getCell(loginCol)),
                         getCellValueAccordingType(row.getCell(passwordCol)),
                         getCellValueAsRoleType(row.getCell(roleTypeCol))
                 );
 
-                userMap.put(login, user);
+                userService.registerUser(String.valueOf(user.getId()), user.getLogin(), user.getPasswordHash(), user.getRoleType());
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return userMap;
     }
 
     // TODO not static (Поч не рекомендуется использовать static)
-    public Map<String, Project> readProjectsToMap(String filePath) {
-        Map<String, Project> projectMap = new LinkedHashMap<>(); // сохраняет порядок вставки
-
+    public void readProjectsToMap(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
@@ -186,31 +162,24 @@ public class FileServiceImpl implements FileService{
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
-                // Получаем значение ключа (user_id) как строку
-                String name = getCellValueAccordingType(row.getCell(nameCol));
-
                 Project project = new Project(
                         Integer.parseInt(getCellValueAccordingType(row.getCell(idCol))),
-                        name,
+                        getCellValueAccordingType(row.getCell(nameCol)),
                         getCellValueAccordingType(row.getCell(descriptionCol)),
                         getCellValueAsLocalDate(row.getCell(dateStartCol)),
                         getCellValueAsLocalDate(row.getCell(dateFinishCol)),
                         Integer.parseInt(getCellValueAccordingType(row.getCell(userIdCol)))
                 );
 
-                projectMap.put(name, project);
+                projectService.create(String.valueOf(project.getId()), project.getName(), project.getDescription(), String.valueOf(project.getDateStart()), String.valueOf(project.getDateFinish()), String.valueOf(project.getUserId()));
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return projectMap;
     }
 
-    public Map<String, Task> readTasksToMap(String filePath) {
-        Map<String, Task> taskMap = new LinkedHashMap<>(); // сохраняет порядок вставки
-
+    public void readTasksToMap(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
@@ -266,27 +235,21 @@ public class FileServiceImpl implements FileService{
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
-                // Получаем значение ключа (user_id) как строку
-                String login = getCellValueAccordingType(row.getCell(nameCol));
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
                 // Создаём объект User
                 Task task = new Task(
                         Integer.parseInt(getCellValueAccordingType(row.getCell(idCol))),
-                        login,
+                        getCellValueAccordingType(row.getCell(nameCol)),
                         getCellValueAccordingType(row.getCell(descriptionCol)),
                         getCellValueAsLocalDate(row.getCell(dateStartCol)),
                         getCellValueAsLocalDate(row.getCell(dateFinishCol)),
                         Integer.parseInt(getCellValueAccordingType(row.getCell(projectIdCol)))
                 );
-                taskMap.put(login, task);
+                taskService.create(String.valueOf(task.getId()), task.getName(), task.getDescription(), String.valueOf(task.getDateStart()), String.valueOf(task.getDateFinish()), String.valueOf(task.getProjectId()));
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return taskMap;
     }
 
     /**
