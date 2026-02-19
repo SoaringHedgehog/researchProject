@@ -19,7 +19,7 @@ public class ProjectService {
     }
 
     //создание project в ProjectRepositoryImpl
-    public void create(String id, String name, String description, String dateStart, String dateFinish, String userId){
+    public Project create(String id, String name, String description, String dateStart, String dateFinish, String userId){
         int idChecked;
         if(id == null || id.isEmpty()) idChecked = projectRepository.getRepositorySize();
         else idChecked = Integer.parseInt(id);
@@ -39,7 +39,7 @@ public class ProjectService {
         }
             userIdChecked = Integer.parseInt(userId);
 
-        projectRepository.create(idChecked, name, description, LocalDate.parse(dateStart), LocalDate.parse(dateFinish), userIdChecked);
+        return projectRepository.create(idChecked, name, description, LocalDate.parse(dateStart), LocalDate.parse(dateFinish), userIdChecked);
     }
 
 
@@ -50,8 +50,15 @@ public class ProjectService {
         }
         return projectRepository.findByName(projectName);
     }
-    public Project findById(int projectName){
-        return projectRepository.findById(projectName);
+    public Project findById(String projectId){
+        int projectIdChecked;
+        if(projectId == null || projectId.isEmpty()){
+            throw new RuntimeException("Id проекта не может быть пустым");
+        }
+        else{
+            projectIdChecked = Integer.parseInt(projectId);
+        }
+        return projectRepository.findById(projectIdChecked);
     }
 
     //UPDATE
@@ -69,7 +76,7 @@ public class ProjectService {
         return project;
     }
 
-    public void updateById(String projectId, String fieldForUpdate, String newValue){
+    public Project updateById(String projectId, String fieldForUpdate, String newValue){
         int projectIdChecked;
         if(projectId == null || projectId.isEmpty()){
             throw new RuntimeException("ID проекта не может быть пустым");
@@ -84,7 +91,7 @@ public class ProjectService {
             throw new RuntimeException("Новое значение не может быть пустым");
         }
 
-        projectRepository.updateById(projectIdChecked, fieldForUpdate, newValue);
+        return projectRepository.updateById(projectIdChecked, fieldForUpdate, newValue);
     }
 
     //DELETE

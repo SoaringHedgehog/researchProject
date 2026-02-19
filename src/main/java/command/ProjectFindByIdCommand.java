@@ -20,7 +20,7 @@ public class ProjectFindByIdCommand implements Command{
     public void process() {
         System.out.println("Выбран поиск проекта по id");
         System.out.println("Введите id проекта");
-        int projectId = Integer.parseInt(scanner.nextLine());
+        String projectId = scanner.nextLine();
         System.out.println(projectService.findById(projectId));
     }
 

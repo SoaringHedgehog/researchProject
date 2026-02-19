@@ -1,6 +1,9 @@
 package command;
 
+import entity.Project;
+import entity.User;
 import service.ProjectService;
+import service.UserService;
 
 import java.util.Scanner;
 
@@ -8,11 +11,13 @@ import java.util.Scanner;
 public class ProjectDeleteCommand implements Command{
     private final Scanner scanner;
     private final ProjectService projectService;
+    private final UserService userService;
     String pattern = "delete_by_name project";
 
-    public ProjectDeleteCommand(Scanner scanner, ProjectService projectService){
+    public ProjectDeleteCommand(Scanner scanner, ProjectService projectService, UserService userService){
         this.scanner = scanner;
         this.projectService = projectService;
+        this.userService = userService;
     }
 
     @Override
@@ -20,7 +25,9 @@ public class ProjectDeleteCommand implements Command{
         System.out.println("Выбрано удаление проекта");
         System.out.println("Введите имя проекта");
         String projectName = scanner.nextLine();
-        projectService.deleteByName(projectName);
+        Project project = projectService.deleteByName(projectName);
+        User user = userService.findById(String.valueOf(project.getUserId()));
+        user.getProjects().remove(project);
     }
 
     @Override

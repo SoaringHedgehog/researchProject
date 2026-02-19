@@ -2,6 +2,7 @@ package service;
 
 import entity.RoleType;
 import entity.Session;
+import entity.User;
 import repository.UserRepository;
 import repository.UserRepositoryImpl;
 
@@ -129,6 +130,17 @@ public class UserService {
         catch(NoSuchAlgorithmException | UnsupportedEncodingException e) {
             throw new RuntimeException("Ошибка при генерации MD5 хеша", e);
         }
+    }
+
+    public User findById(String userId){
+        int userIdChecked;
+        if(userId == null || userId.isEmpty()){
+            throw new RuntimeException("Id проекта не может быть пустым");
+        }
+        else{
+            userIdChecked = Integer.parseInt(userId);
+        }
+        return userRepository.findById(userIdChecked);
     }
 
     public void printCurrentProfileInfo(Session session){

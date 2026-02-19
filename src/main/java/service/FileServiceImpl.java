@@ -3,9 +3,6 @@ package service;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import entity.Project;
 import entity.RoleType;
@@ -16,9 +13,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class FileServiceImpl implements FileService{
-    String filePathProjects = "src/main/java/resources/projects.xlsx";
-    String filePathTasks = "src/main/java/resources/tasks.xlsx";
-    String filePathUsers = "src/main/java/resources/users.xlsx";
+    private final String FILE_PATH_PROJECTS = "src/main/java/resources/projects.xlsx";
+    private final String FILE_PATH_TASKS = "src/main/java/resources/tasks.xlsx";
+    private final String FILE_PATH_USERS = "src/main/java/resources/users.xlsx";
 
     ProjectService projectService;
     TaskService taskService;
@@ -33,33 +30,32 @@ public class FileServiceImpl implements FileService{
     @Override
     public void initialize() {
         System.out.println("Пользователи:");
-        readUsersToMap(filePathUsers);
-        System.out.println("Ползователи заполнены из файла");
+        readUsersToMap(FILE_PATH_USERS);
+        System.out.println("Ползователи успешно заполнены из файла");
+        System.out.println();
 
         System.out.println("Проекты: ");
-        readProjectsToMap(filePathProjects);
-        System.out.println("Проекты заполнены из файла");
+        readProjectsToMap(FILE_PATH_PROJECTS);
+        System.out.println("Проекты успешно заполнены из файла");
         System.out.println();
 
         System.out.println("Задачи: ");
-        readTasksToMap(filePathTasks);
-        System.out.println("Задачи заполнены из файла");
+        readTasksToMap(FILE_PATH_TASKS);
+        System.out.println("Задачи успешно заполнены из файла");
         System.out.println();
     }
 
-    public void readUsersToMap(String filePath) {
+    private void readUsersToMap(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
             Sheet sheet = workbook.getSheetAt(0); // первый лист
 
-            // Предполагаем, что первая строка (индекс 0) — заголовки
             Row headerRow = sheet.getRow(0);
             if (headerRow == null) {
                 throw new RuntimeException("Файл не содержит заголовков");
             }
 
-            // Определяем индексы колонок (можно хардкодить, но так надёжнее)
             int idCol = -1;
             int loginCol = -1;
             int passwordCol = -1;
@@ -79,6 +75,9 @@ public class FileServiceImpl implements FileService{
                         break;
                     case "roletype":
                         roleTypeCol = cell.getColumnIndex();
+                        break;
+                    default:
+                        System.out.println("Такого поля для чтения не существует");
                         break;
                 }
             }
@@ -108,8 +107,7 @@ public class FileServiceImpl implements FileService{
         }
     }
 
-    // TODO not static (Поч не рекомендуется использовать static)
-    public void readProjectsToMap(String filePath) {
+    private void readProjectsToMap(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
@@ -150,6 +148,9 @@ public class FileServiceImpl implements FileService{
                     case "userid":
                         userIdCol = cell.getColumnIndex();
                         break;
+                    default:
+                        System.out.println("Такого поля для чтения не существует");
+                        break;
                 }
             }
 
@@ -179,7 +180,7 @@ public class FileServiceImpl implements FileService{
         }
     }
 
-    public void readTasksToMap(String filePath) {
+    private void readTasksToMap(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 

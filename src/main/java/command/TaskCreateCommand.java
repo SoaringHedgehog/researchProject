@@ -42,8 +42,9 @@ public class TaskCreateCommand implements Command{
             String dateFinish = scanner.nextLine();
             System.out.print("Введите проект, которому принадлежит задача: ");
             String projectId = scanner.nextLine();
+            // TODO Мне не нравится
             Task task = taskService.create(id, name, description, dateStart, dateFinish, projectId);
-            Project project = projectService.findById(Integer.parseInt(projectId));
+            Project project = projectService.findById(projectId);
             project.getTasks().add(task);
         }
     }

@@ -1,10 +1,12 @@
 package repository;
 
+import entity.Project;
 import entity.RoleType;
 import entity.Session;
 import entity.User;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class UserRepositoryImpl implements UserRepository{
@@ -23,11 +25,11 @@ public class UserRepositoryImpl implements UserRepository{
         }
 
         if(Objects.equals(user.getPasswordHash(), passwordHash)){
-            session.setCurrentUser(userMap.get(login));
+            session.setCurrentUser(user);
             System.out.println("Пользователь авторизован");
         }
         else{
-            System.out.println("Неверный пароль");
+            throw new RuntimeException("Неверный пароль");
         }
     }
 
@@ -39,7 +41,7 @@ public class UserRepositoryImpl implements UserRepository{
             System.out.println("Пользователь успешно зарегистрирован");
         }
         else{
-            System.out.println("Такой логин уже занят. Попробуйте другой");
+            throw new RuntimeException("Такой логин уже занят. Попробуйте другой");
         }
     }
 
@@ -57,6 +59,16 @@ public class UserRepositoryImpl implements UserRepository{
             System.out.println("Пароль успешно изменён");
         }
         else System.out.println("Пароль введён неверно. Операция отменена");
+    }
+
+    @Override
+    public User findById(int userId){
+        for(Map.Entry<String, User> elem : userMap.entrySet()){
+            if(elem.getValue().getId() == userId){
+                return userMap.get(elem.getKey());
+            }
+        }
+        throw new RuntimeException("Пользователь с таким Id не найден");
     }
 
     @Override

@@ -31,9 +31,9 @@ public class CommandRegistry {
         Command command = new ExitCommand();
         commandMap.put(command.getName(), command);
         
-        command = new ProjectCreateCommand(scanner, projectService);
+        command = new ProjectCreateCommand(scanner, projectService, userService);
         commandMap.put(command.getName(), command);
-        command = new ProjectDeleteCommand(scanner, projectService);
+        command = new ProjectDeleteCommand(scanner, projectService, userService);
         commandMap.put(command.getName(), command);
         command = new ProjectFindByIdCommand(scanner, projectService);
         commandMap.put(command.getName(), command);
@@ -46,7 +46,7 @@ public class CommandRegistry {
 
         command = new TaskCreateCommand(scanner, taskService, projectService);
         commandMap.put(command.getName(), command);
-        command = new TaskDeleteCommand(scanner, taskService);
+        command = new TaskDeleteCommand(scanner, taskService, projectService);
         commandMap.put(command.getName(), command);
         command = new TaskFindByIdCommand(scanner, taskService);
         commandMap.put(command.getName(), command);

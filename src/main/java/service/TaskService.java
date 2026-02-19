@@ -81,10 +81,10 @@ public class TaskService {
     }
 
     //DELETE
-    public void deleteByName(String taskName){
+    public Task deleteByName(String taskName){
         if(taskName == null || taskName.isEmpty()){
             throw new RuntimeException("Имя задачи не может быть пустым");
         }
-        taskRepository.deleteByName(taskName);
+        return taskRepository.deleteByName(taskName);
     }
 }

@@ -1,6 +1,9 @@
 package command;
 
+import entity.Project;
+import entity.User;
 import service.ProjectService;
+import service.UserService;
 
 import java.util.Scanner;
 
@@ -8,11 +11,13 @@ import java.util.Scanner;
 public class ProjectCreateCommand implements Command{
     private final Scanner scanner;
     private final ProjectService projectService;
+    private final UserService userService;
     public final static String pattern = "create project";
 
-    public ProjectCreateCommand(Scanner scanner, ProjectService projectService){
+    public ProjectCreateCommand(Scanner scanner, ProjectService projectService, UserService userService){
         this.scanner = scanner;
         this.projectService = projectService;
+        this.userService = userService;
     }
 
     @Override
@@ -37,7 +42,9 @@ public class ProjectCreateCommand implements Command{
             String dateFinish = scanner.nextLine();
             System.out.print("Введите id пользователя: ");
             String userId = scanner.nextLine();
-            projectService.create(id, name, description, dateStart, dateFinish, userId);
+            Project project = projectService.create(id, name, description, dateStart, dateFinish, userId);
+            User user = userService.findById(userId);
+            user.getProjects().add(project);
         }
     }
 

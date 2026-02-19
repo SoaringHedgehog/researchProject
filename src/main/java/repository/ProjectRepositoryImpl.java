@@ -19,14 +19,15 @@ public class ProjectRepositoryImpl implements ProjectRepository{
 
     //CREATE
     @Override
-    public void create(int id, String name, String description, LocalDate dateStart, LocalDate dateFinish, int userId){
+    public Project create(int id, String name, String description, LocalDate dateStart, LocalDate dateFinish, int userId){
         if(!projectMap.containsKey(name)){
             Project project = new Project(id, name, description, dateStart, dateFinish, userId);
             projectMap.put(project.getName(), project);
             System.out.println("Проект успешно добавлен");
+            return project;
         }
         else{
-            System.out.println("Проекта с таким названием уже существует. Попробуйте другое");
+            throw new RuntimeException("Проекта с таким названием уже существует. Попробуйте другое");
         }
     }
 

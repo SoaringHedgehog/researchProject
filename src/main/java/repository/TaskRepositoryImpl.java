@@ -199,7 +199,14 @@ public class TaskRepositoryImpl implements TaskRepository{
     //DELETE
     @Override
     public Task deleteByName(String taskName){
-        return taskMap.remove(taskName);
+        if(taskMap.containsKey(taskName)){
+            Task task = taskMap.remove(taskName);
+            System.out.println("Проект успешно удалён");
+            return task;
+        }
+        else{
+            throw new RuntimeException("Задача с таким названием не найдена");
+        }
     }
 
     @Override
