@@ -2,6 +2,7 @@ package service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 
 import entity.Project;
@@ -61,6 +62,8 @@ public class FileServiceImpl implements FileService{
             int passwordCol = -1;
             int roleTypeCol = -1;
 
+            // TODO абстрактный файлСервис
+            // TODO реализовать switch через Map + вынести в отдельные методы реализацию повторяющейся логики
             for (Cell cell : headerRow) {
                 String header = cell.getStringCellValue().toLowerCase().trim();
                 switch (header) {
@@ -165,6 +168,8 @@ public class FileServiceImpl implements FileService{
                 );
 
                 projectService.create(String.valueOf(project.getId()), project.getName(), project.getDescription(), String.valueOf(project.getDateStart()), String.valueOf(project.getDateFinish()), String.valueOf(project.getUserId()));
+                User user = userService.findById(String.valueOf(project.getUserId()));
+                user.getProjects().add(project);
             }
 
         } catch (IOException e) {
@@ -234,8 +239,9 @@ public class FileServiceImpl implements FileService{
                         Integer.parseInt(getCellValueAccordingType(row.getCell(projectIdCol)))
                 );
                 taskService.create(String.valueOf(task.getId()), task.getName(), task.getDescription(), String.valueOf(task.getDateStart()), String.valueOf(task.getDateFinish()), String.valueOf(task.getProjectId()));
+                Project project = projectService.findById(String.valueOf(task.getProjectId()));
+                project.getTasks().add(task);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
