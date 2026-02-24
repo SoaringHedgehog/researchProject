@@ -1,8 +1,6 @@
 package command;
 
 import entity.RoleType;
-import entity.Session;
-import entity.User;
 import service.UserService;
 
 import java.util.Scanner;
@@ -33,17 +31,11 @@ public class UserRegisterCommand implements Command{
             String login = scanner.nextLine();
             System.out.print("Введите пароль: ");
             String password = scanner.nextLine();
-            RoleType[] roleTypes = RoleType.values();
             System.out.println("Введите номер роли из перечисленного: ");
-            for (int i = 0; i < roleTypes.length; i++) {
-                System.out.println(i + " " + roleTypes[i]);
-            }
-            int roleType = Integer.parseInt(scanner.nextLine());
-            if(roleType < 0 || roleType > roleTypes.length - 1){
-                System.out.println("Такой роли не существует");
-                return;
-            }
-            userService.registerUser(id, login, password, roleTypes[roleType]);
+            userService.printRoleTypes();
+            int roleTypeIndex = Integer.parseInt(scanner.nextLine());
+            String roleType = userService.chooseRoleType(roleTypeIndex).toString();
+            userService.registerUser(id, login, password, roleType);
         }
     }
 

@@ -42,9 +42,11 @@ public class TerminalService implements ServiceLocator{
             }
             catch (RuntimeException e){
                 System.out.println(e);
+                e.printStackTrace();
             }
             catch(Exception e){
                 System.out.println(e);
+                e.printStackTrace();
             }
         }
     }

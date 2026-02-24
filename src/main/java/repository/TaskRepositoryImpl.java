@@ -1,6 +1,5 @@
 package repository;
 
-import entity.Project;
 import entity.Task;
 
 import java.time.LocalDate;
@@ -9,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TaskRepositoryImpl implements TaskRepository{
-    private HashMap<String, Task> taskMap;
+    private Map<String, Task> taskMap;
 
     public TaskRepositoryImpl(){
         this.taskMap = new HashMap<>();
@@ -21,7 +20,7 @@ public class TaskRepositoryImpl implements TaskRepository{
         if(!taskMap.containsKey(name)){
             Task task = new Task(id, name, description, dateStart, dateFinish, projectId);
             taskMap.put(task.getName(), task);
-            System.out.println("Задача успешно добавлена");
+            System.out.println("Задача успешно добавлена: " + task);
             return task;
         }
         else{

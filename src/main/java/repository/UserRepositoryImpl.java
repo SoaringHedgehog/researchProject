@@ -1,6 +1,5 @@
 package repository;
 
-import entity.Project;
 import entity.RoleType;
 import entity.Session;
 import entity.User;
@@ -11,7 +10,7 @@ import java.util.Objects;
 
 public class UserRepositoryImpl implements UserRepository{
     // Map<login, user>
-    private HashMap<String, User> userMap;
+    private Map<String, User> userMap;
 
     public UserRepositoryImpl(){
         this.userMap = new HashMap<>();
@@ -38,7 +37,7 @@ public class UserRepositoryImpl implements UserRepository{
         if(!userMap.containsKey(login)){
             User user = new User(userId, login, passwordHash, role);
             userMap.put(login, user);
-            System.out.println("Пользователь успешно зарегистрирован");
+            System.out.println("Пользователь успешно зарегистрирован: " + user);
         }
         else{
             throw new RuntimeException("Такой логин уже занят. Попробуйте другой");
@@ -73,6 +72,7 @@ public class UserRepositoryImpl implements UserRepository{
 
     @Override
     public void printCurrentProfileInfo(Session session){
+        if(session.getCurrentUser() == null) throw new RuntimeException("Пользователь не авторизован");
         System.out.println(session.getCurrentUser().toString());
     }
 

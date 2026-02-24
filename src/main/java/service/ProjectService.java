@@ -6,6 +6,7 @@ import repository.ProjectRepository;
 import repository.ProjectRepositoryImpl;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class ProjectService {
     private ProjectRepository projectRepository;
@@ -20,6 +21,8 @@ public class ProjectService {
 
     //создание project в ProjectRepositoryImpl
     public Project create(String id, String name, String description, String dateStart, String dateFinish, String userId){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
         int idChecked;
         if(id == null || id.isEmpty()) idChecked = projectRepository.getRepositorySize();
         else idChecked = Integer.parseInt(id);
@@ -27,19 +30,26 @@ public class ProjectService {
         if(name == null || name.isEmpty()){
             throw new RuntimeException("Имя проекта не может быть пустым");
         }
+
+
         if(dateStart == null || dateStart.isEmpty()){
             throw new RuntimeException("Дата начала проекта не может быть пустой");
         }
+        LocalDate localDateStart = LocalDate.parse(dateStart, dateTimeFormatter);
+
         if(dateFinish == null || dateFinish.isEmpty()){
             throw new RuntimeException("Дата окончания проекта не может быть пустой");
         }
+        LocalDate localDateFinish = LocalDate.parse(dateFinish, dateTimeFormatter);
+
         int userIdChecked;
         if(userId == null || userId.isEmpty()){
             throw new RuntimeException("Пользователь проекта не может быть пустой");
         }
-            userIdChecked = Integer.parseInt(userId);
+        userIdChecked = Integer.parseInt(userId);
 
-        return projectRepository.create(idChecked, name, description, LocalDate.parse(dateStart), LocalDate.parse(dateFinish), userIdChecked);
+
+        return projectRepository.create(idChecked, name, description, localDateStart, localDateFinish, userIdChecked);
     }
 
 

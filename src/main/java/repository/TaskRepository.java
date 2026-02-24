@@ -1,7 +1,6 @@
 package repository;
 
 import entity.Task;
-import entity.User;
 
 import java.time.LocalDate;
 

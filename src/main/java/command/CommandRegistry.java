@@ -1,7 +1,6 @@
 package command;
 
 import entity.Session;
-import entity.User;
 import service.ProjectService;
 import service.TaskService;
 import service.UserService;

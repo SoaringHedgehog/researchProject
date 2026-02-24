@@ -50,7 +50,7 @@ public class UserService {
         }
     }
 
-    public void registerUser(String id, String login, String password, RoleType role) {
+    public void registerUser(String id, String login, String password, String roleType) {
         int idChecked;
         if(id == null) idChecked = userRepository.getRepositorySize();
         else idChecked = Integer.parseInt(id);
@@ -61,6 +61,10 @@ public class UserService {
 
         if(password == null || password.isEmpty()){
             throw new RuntimeException("Пароль не может быть пустым");
+        }
+
+        if(roleType == null || roleType.isEmpty()){
+            throw new RuntimeException("Роль не может быть пустой");
         }
 
         try{
@@ -75,7 +79,7 @@ public class UserService {
                 checkedPassword.append(String.format("%02x", b & 0xff));
             }
 
-            userRepository.registerUser(idChecked, login, checkedPassword.toString(), role);
+            userRepository.registerUser(idChecked, login, checkedPassword.toString(), RoleType.valueOf(roleType));
         }
         catch(NoSuchAlgorithmException | UnsupportedEncodingException e) {
             throw new RuntimeException("Ошибка при генерации MD5 хеша", e);
@@ -145,5 +149,20 @@ public class UserService {
 
     public void printCurrentProfileInfo(Session session){
         userRepository.printCurrentProfileInfo(session);
+    }
+
+    public void printRoleTypes(){
+        RoleType[] roleTypes = RoleType.values();
+        for (int i = 0; i < roleTypes.length; i++) {
+            System.out.println(i + " " + roleTypes[i]);
+        }
+    }
+
+    public RoleType chooseRoleType(int roleType){
+        RoleType[] roleTypes = RoleType.values();
+        if(roleType < 0 || roleType > roleTypes.length - 1){
+            throw new RuntimeException("Такой роли не существует");
+        }
+        return roleTypes[roleType];
     }
 }

@@ -12,6 +12,6 @@ public interface ProjectRepository {
     Project updateById(int projectId, String fileForUpdate, String newValue);
     Project delete(String projectName);
     int getRepositorySize();
-    void printTasks(String projectName);
+    void printTasksByProjectName(String projectName);
     void printAllProjects();
 }

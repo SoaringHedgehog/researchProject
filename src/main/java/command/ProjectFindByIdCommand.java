@@ -1,6 +1,5 @@
 package command;
 
-import entity.Project;
 import service.ProjectService;
 
 import java.util.Scanner;

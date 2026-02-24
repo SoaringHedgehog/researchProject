@@ -5,6 +5,7 @@ import repository.TaskRepository;
 import repository.TaskRepositoryImpl;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class TaskService {
     private final TaskRepository taskRepository;
@@ -15,19 +16,26 @@ public class TaskService {
 
     //CREATE
     public Task create(String id, String name, String description, String dateStart, String dateFinish, String projectId){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
         int idChecked;
-        if(id == null) idChecked = taskRepository.getRepositorySize();
+        if(id == null || id.isEmpty()) idChecked = taskRepository.getRepositorySize();
         else idChecked = Integer.parseInt(id);
 
         if(name == null || name.isEmpty()){
             throw new RuntimeException("Имя задачи не может быть пустым");
         }
+
         if(dateStart == null || dateStart.isEmpty()){
             throw new RuntimeException("Дата начала задачи не может быть пустой");
         }
+        LocalDate localDateStart = LocalDate.parse(dateStart, dateTimeFormatter);
+
         if(dateFinish == null || dateFinish.isEmpty()){
             throw new RuntimeException("Дата окончания задачи не может быть пустой");
         }
+        LocalDate localDateFinish = LocalDate.parse(dateFinish, dateTimeFormatter);
+
         int projectIdChecked;
         if(projectId == null || projectId.isEmpty()){
             throw new RuntimeException("Id проекта не может быть пустым");
@@ -36,7 +44,7 @@ public class TaskService {
             projectIdChecked = Integer.parseInt(projectId);
         }
 
-        return taskRepository.create(idChecked, name, description, LocalDate.parse(dateStart), LocalDate.parse(dateFinish), projectIdChecked);
+        return taskRepository.create(idChecked, name, description, localDateStart, localDateFinish, projectIdChecked);
     }
 
     //READ
@@ -46,8 +54,15 @@ public class TaskService {
         }
         return taskRepository.findByName(taskName);
     }
-    public Task findById(int taskId){
-        return taskRepository.findById(taskId);
+    public Task findById(String taskId){
+        int taskIdChecked;
+        if(taskId == null || taskId.isEmpty()){
+            throw new RuntimeException("Id проекта не может быть пустым");
+        }
+        else{
+            taskIdChecked = Integer.parseInt(taskId);
+        }
+        return taskRepository.findById(taskIdChecked);
     }
 
     //UPDATE

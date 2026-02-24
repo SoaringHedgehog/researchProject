@@ -36,13 +36,12 @@ public class TaskCreateCommand implements Command{
             String name = scanner.nextLine();
             System.out.print("Введите описание: ");
             String description = scanner.nextLine();
-            System.out.print("Введите дату начала проекта: ");
+            System.out.print("Введите дату начала проекта(dd.MM.yyyy): ");
             String dateStart = scanner.nextLine();
-            System.out.print("Введите дату окончания проекта: ");
+            System.out.print("Введите дату окончания проекта(dd.MM.yyyy): ");
             String dateFinish = scanner.nextLine();
-            System.out.print("Введите проект, которому принадлежит задача: ");
+            System.out.print("Введите id проекта, которому принадлежит задача: ");
             String projectId = scanner.nextLine();
-            // TODO Мне не нравится
             Task task = taskService.create(id, name, description, dateStart, dateFinish, projectId);
             Project project = projectService.findById(projectId);
             project.getTasks().add(task);

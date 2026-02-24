@@ -1,8 +1,6 @@
 package service;
 
 import command.Command;
-import entity.RoleType;
-import entity.User;
 
 import java.util.HashMap;
 

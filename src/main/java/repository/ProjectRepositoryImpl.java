@@ -2,7 +2,6 @@ package repository;
 
 import entity.Project;
 import entity.Task;
-import entity.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProjectRepositoryImpl implements ProjectRepository{
-    //<name, project>
-    private HashMap<String, Project> projectMap;
+    //Map<name, project>
+    private Map<String, Project> projectMap;
 
     public ProjectRepositoryImpl(){
         this.projectMap = new HashMap<>();
@@ -23,7 +22,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
         if(!projectMap.containsKey(name)){
             Project project = new Project(id, name, description, dateStart, dateFinish, userId);
             projectMap.put(project.getName(), project);
-            System.out.println("Проект успешно добавлен");
+            System.out.println("Проект успешно добавлен: " + project);
             return project;
         }
         else{
@@ -216,7 +215,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     }
 
     @Override
-    public void printTasks(String projectName){
+    public void printTasksByProjectName(String projectName){
         if(projectMap.containsKey(projectName)){
             Project project = projectMap.get(projectName);
             for(Task task : project.getTasks()){

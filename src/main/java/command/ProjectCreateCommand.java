@@ -36,11 +36,11 @@ public class ProjectCreateCommand implements Command{
             String name = scanner.nextLine();
             System.out.print("Введите описание: ");
             String description = scanner.nextLine();
-            System.out.print("Введите дату начала проекта: ");
+            System.out.print("Введите дату начала проекта(dd.MM.yyyy): ");
             String dateStart = scanner.nextLine();
-            System.out.print("Введите дату окончания проекта: ");
+            System.out.print("Введите дату окончания проекта(dd.MM.yyyy): ");
             String dateFinish = scanner.nextLine();
-            System.out.print("Введите id пользователя: ");
+            System.out.print("Введите id пользователя проекта: ");
             String userId = scanner.nextLine();
             Project project = projectService.create(id, name, description, dateStart, dateFinish, userId);
             User user = userService.findById(userId);
