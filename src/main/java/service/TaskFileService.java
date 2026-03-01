@@ -1,33 +1,35 @@
 package service;
 
-import entity.User;
+import entity.Project;
+import entity.Task;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserFileService extends AbstractFileService{
-    private final String FILE_PATH_USERS = "src/main/resources/users.xlsx";
-    UserService userService;
+public class TaskFileService extends AbstractFileService{
+    private final String FILE_PATH_TASKS = "src/main/resources/tasks.xlsx";
+    TaskService taskService;
+    ProjectService projectService;
     Sheet sheet;
     Map<String, Integer> columnNameIndexMap;
 
-    public UserFileService(UserService userService){
-        this.userService = userService;
+    public TaskFileService(TaskService taskService, ProjectService projectService){
+        this.taskService = taskService;
+        this.projectService = projectService;
         this.columnNameIndexMap = new HashMap<>();
     }
 
     @Override
     void readColumnNames(){
-        try (FileInputStream fis = new FileInputStream(FILE_PATH_USERS);
+        try (FileInputStream fis = new FileInputStream(FILE_PATH_TASKS);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
             sheet = workbook.getSheetAt(0); // первый лист
@@ -38,7 +40,7 @@ public class UserFileService extends AbstractFileService{
             }
 
             columnNameIndexMap = new HashMap<>();
-            Field[] fields = User.class.getDeclaredFields();
+            Field[] fields = Task.class.getDeclaredFields();
             for (Cell cell : headerRow) {
                 boolean found = false;
                 String header = cell.getStringCellValue().trim();
@@ -63,12 +65,21 @@ public class UserFileService extends AbstractFileService{
             Row row = sheet.getRow(i);
             if (row == null) continue;
 
-            userService.registerUser(
-                    getCellValueAccordingType(row.getCell(columnNameIndexMap.get("id"))),
-                    getCellValueAccordingType(row.getCell(columnNameIndexMap.get("login"))),
-                    getCellValueAccordingType(row.getCell(columnNameIndexMap.get("passwordHash"))),
-                    getCellValueAccordingType(row.getCell(columnNameIndexMap.get("roleType")))
+            String taskId = getCellValueAccordingType(row.getCell(columnNameIndexMap.get("id")));
+            String projectId = getCellValueAccordingType(row.getCell(columnNameIndexMap.get("projectId")));
+
+            taskService.create(
+                    taskId,
+                    getCellValueAccordingType(row.getCell(columnNameIndexMap.get("name"))),
+                    getCellValueAccordingType(row.getCell(columnNameIndexMap.get("description"))),
+                    getCellValueAccordingType(row.getCell(columnNameIndexMap.get("dateStart"))),
+                    getCellValueAccordingType(row.getCell(columnNameIndexMap.get("dateFinish"))),
+                    projectId
             );
+
+            Task task = taskService.findById(taskId);
+            Project project = projectService.findById(projectId);
+            project.getTasks().add(task);
         }
     }
 }
